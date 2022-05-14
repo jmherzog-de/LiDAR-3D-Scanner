@@ -120,8 +120,6 @@ typedef struct{
 
 uint8_t DistanceSensor_Init(tDistanceSensor *sensor, I2C_HandleTypeDef *i2c, uint8_t address);
 
-uint8_t DistanceSensor_ReadRangeStatus(tDistanceSensor *sensor);
-
 uint8_t DistanceSensor_Trigger(tDistanceSensor *sensor);
 
 uint8_t DistanceSensor_TrigResponse(tDistanceSensor *sensor);
