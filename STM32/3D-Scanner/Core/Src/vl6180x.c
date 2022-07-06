@@ -1,22 +1,22 @@
 /**
-* Copyright 2022 Jean-Marcel Herzog
-*
-* Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-* associated documentation files (the "Software"), to deal in the Software without restriction,
-* including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense
-* and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do
-* so, subject to the following conditions:
-*
-* The above copyright notice and this permission notice shall be included in all copies or
-* substantial portions of the Software.
-*
-* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-* INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-* PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-* COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
-* AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-* WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Copyright 2022 Jean-Marcel Herzog
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do
+ * so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN
+ * AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 /**
  * @author: Herzog, Jean-Marcel
@@ -24,18 +24,20 @@
  * @copyright Copyright 2022 Jean-Marcel Herzog. This project is released under the MIT license.
  * @date 11.05.2022
  * @version 1
-*/
+ */
 
 #include "vl6180x.h"
 
-void DistanceSensor_SetRegister(tDistanceSensor *sensor, uint16_t registerAddr, uint8_t data);
+void DistanceSensor_SetRegister(tDistanceSensor *sensor, uint16_t registerAddr,
+		uint8_t data);
 
-void DistanceSensor_SetRegister16bit(tDistanceSensor *sensor, uint16_t registerAddr, uint16_t data);
+void DistanceSensor_SetRegister16bit(tDistanceSensor *sensor,
+		uint16_t registerAddr, uint16_t data);
 
 void DistanceSensor_GetRegister(tDistanceSensor *sensor, uint16_t registerAddr);
 
-void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor, uint16_t registerAddr);
-
+void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor,
+		uint16_t registerAddr);
 
 /**
  * @brief Initialize VL6180X distance sensor
@@ -51,50 +53,55 @@ void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor, uint16_t registerA
  *
  * @return 0x00 := NO ERROR | 0x01 := UNREFERENCED INSTANCE
  */
-uint8_t DistanceSensor_Init(tDistanceSensor *sensor, I2C_HandleTypeDef *i2c, uint8_t address)
-{
+uint8_t DistanceSensor_Init(tDistanceSensor *sensor, I2C_HandleTypeDef *i2c,
+		uint8_t address) {
 	if (sensor == NULL || i2c == NULL)
 		return 0x01;
 
-	sensor->hi2cx		= i2c;
-	sensor->address		= address;
-	sensor->data		= 0x00;
-	sensor->data_16		= 0x00;
-	sensor->distance	= 0x00;
-	sensor->trig		= 0x00;
+	sensor->hi2cx = i2c;
+	sensor->address = address;
+	sensor->data = 0x00;
+	sensor->data_16 = 0x00;
+	sensor->distance = 0x00;
+	sensor->trig = 0x00;
 
 	/* REGISTER_TUNING_SR03_270514_CustomerView.txt */
 	DistanceSensor_SetRegister(sensor, VL6180X_SYSTEM_FRESH_OUT_OF_RESET, 0x01);
-	DistanceSensor_SetRegister(sensor,0x0207, 0x01);
-	DistanceSensor_SetRegister(sensor,0x0208, 0x01);
-	DistanceSensor_SetRegister(sensor,0x0096, 0x00);
-	DistanceSensor_SetRegister(sensor,0x0097, 0xfd);
-	DistanceSensor_SetRegister(sensor,0x00e3, 0x00);
-	DistanceSensor_SetRegister(sensor,0x00e4, 0x04);
-	DistanceSensor_SetRegister(sensor,0x00e5, 0x02);
-	DistanceSensor_SetRegister(sensor,0x00e6, 0x01);
-	DistanceSensor_SetRegister(sensor,0x00e7, 0x03);
-	DistanceSensor_SetRegister(sensor,0x00f5, 0x02);
-	DistanceSensor_SetRegister(sensor,0x00d9, 0x05);
-	DistanceSensor_SetRegister(sensor,0x00db, 0xce);
-	DistanceSensor_SetRegister(sensor,0x00dc, 0x03);
-	DistanceSensor_SetRegister(sensor,0x00dd, 0xf8);
-	DistanceSensor_SetRegister(sensor,0x009f, 0x00);
-	DistanceSensor_SetRegister(sensor,0x00a3, 0x3c);
-	DistanceSensor_SetRegister(sensor,0x00b7, 0x00);
-	DistanceSensor_SetRegister(sensor,0x00bb, 0x3c);
-	DistanceSensor_SetRegister(sensor,0x00b2, 0x09);
-	DistanceSensor_SetRegister(sensor,0x00ca, 0x09);
-	DistanceSensor_SetRegister(sensor,0x0198, 0x01);
-	DistanceSensor_SetRegister(sensor,0x01b0, 0x17);
-	DistanceSensor_SetRegister(sensor,0x01ad, 0x00);
-	DistanceSensor_SetRegister(sensor,0x00ff, 0x05);
-	DistanceSensor_SetRegister(sensor,0x0100, 0x05);
-	DistanceSensor_SetRegister(sensor,0x0199, 0x05);
-	DistanceSensor_SetRegister(sensor,0x01a6, 0x1b);
-	DistanceSensor_SetRegister(sensor,0x01ac, 0x3e);
-	DistanceSensor_SetRegister(sensor,0x01a7, 0x1f);
-	DistanceSensor_SetRegister(sensor,0x0030, 0x00);
+
+	do {
+		DistanceSensor_GetRegister(sensor, VL6180X_SYSTEM_FRESH_OUT_OF_RESET);
+	} while (sensor->data != 0x01);
+
+	DistanceSensor_SetRegister(sensor, 0x0207, 0x01);
+	DistanceSensor_SetRegister(sensor, 0x0208, 0x01);
+	DistanceSensor_SetRegister(sensor, 0x0096, 0x00);
+	DistanceSensor_SetRegister(sensor, 0x0097, 0xfd);
+	DistanceSensor_SetRegister(sensor, 0x00e3, 0x00);
+	DistanceSensor_SetRegister(sensor, 0x00e4, 0x04);
+	DistanceSensor_SetRegister(sensor, 0x00e5, 0x02);
+	DistanceSensor_SetRegister(sensor, 0x00e6, 0x01);
+	DistanceSensor_SetRegister(sensor, 0x00e7, 0x03);
+	DistanceSensor_SetRegister(sensor, 0x00f5, 0x02);
+	DistanceSensor_SetRegister(sensor, 0x00d9, 0x05);
+	DistanceSensor_SetRegister(sensor, 0x00db, 0xce);
+	DistanceSensor_SetRegister(sensor, 0x00dc, 0x03);
+	DistanceSensor_SetRegister(sensor, 0x00dd, 0xf8);
+	DistanceSensor_SetRegister(sensor, 0x009f, 0x00);
+	DistanceSensor_SetRegister(sensor, 0x00a3, 0x3c);
+	DistanceSensor_SetRegister(sensor, 0x00b7, 0x00);
+	DistanceSensor_SetRegister(sensor, 0x00bb, 0x3c);
+	DistanceSensor_SetRegister(sensor, 0x00b2, 0x09);
+	DistanceSensor_SetRegister(sensor, 0x00ca, 0x09);
+	DistanceSensor_SetRegister(sensor, 0x0198, 0x01);
+	DistanceSensor_SetRegister(sensor, 0x01b0, 0x17);
+	DistanceSensor_SetRegister(sensor, 0x01ad, 0x00);
+	DistanceSensor_SetRegister(sensor, 0x00ff, 0x05);
+	DistanceSensor_SetRegister(sensor, 0x0100, 0x05);
+	DistanceSensor_SetRegister(sensor, 0x0199, 0x05);
+	DistanceSensor_SetRegister(sensor, 0x01a6, 0x1b);
+	DistanceSensor_SetRegister(sensor, 0x01ac, 0x3e);
+	DistanceSensor_SetRegister(sensor, 0x01a7, 0x1f);
+	DistanceSensor_SetRegister(sensor, 0x0030, 0x00);
 
 	/* Recommended : Public registers - See data sheet for more detail */
 	DistanceSensor_SetRegister(sensor, 0x0011, 0x10); /* Enables polling for New Sample ready when measurement completes */
@@ -121,15 +128,17 @@ uint8_t DistanceSensor_Init(tDistanceSensor *sensor, I2C_HandleTypeDef *i2c, uin
  *
  * @return 0x00 := NO ERROR | 0x01 := UNREFERENCED INSTANCE | 0x02 := INVALID I2C ADDRESS
  */
-uint8_t DistanceSensor_ChangeAddress(tDistanceSensor *sensor, uint8_t new_addr)
-{
+uint8_t DistanceSensor_ChangeAddress(tDistanceSensor *sensor, uint8_t new_addr) {
 	if (sensor == NULL)
 		return 0x01;
 
-	if (sensor->address == new_addr) return 0x00;
-	if (new_addr > 127) return 0x02;
+	if (sensor->address == new_addr)
+		return 0x00;
+	if (new_addr > 127)
+		return 0x02;
 
-	DistanceSensor_SetRegister(sensor, VL6180X_I2C_SLAVE_DEVICE_ADDRESS, new_addr);
+	DistanceSensor_SetRegister(sensor, VL6180X_I2C_SLAVE_DEVICE_ADDRESS,
+			new_addr);
 	sensor->address = new_addr << 1;
 	DistanceSensor_SetRegister(sensor, VL6180X_I2C_SLAVE_DEVICE_ADDRESS, 0x07);
 
@@ -145,8 +154,8 @@ uint8_t DistanceSensor_ChangeAddress(tDistanceSensor *sensor, uint8_t new_addr)
  *
  * @return 0x00
  */
-uint8_t DistanceSensor_GetIdentification(tDistanceSensor *sensor, tDistanceSensorIdentification *identification)
-{
+uint8_t DistanceSensor_GetIdentification(tDistanceSensor *sensor,
+		tDistanceSensorIdentification *identification) {
 	DistanceSensor_GetRegister(sensor, VL6180X_IDENTIFICATION_MODEL_ID);
 	identification->model = sensor->data;
 
@@ -176,10 +185,11 @@ uint8_t DistanceSensor_GetIdentification(tDistanceSensor *sensor, tDistanceSenso
  *
  * @return 0x00
  */
-uint8_t DistanceSensor_StartContinousMeasurements(tDistanceSensor *sensor)
-{
-	DistanceSensor_SetRegister(sensor, VL6180X_SYSALS_INTERMEASUREMENT_PERIOD, 0x00);
-	DistanceSensor_SetRegister(sensor, VL6180X_SYSRANGE_MAX_CONVERGENCE_TIME, 0x01);
+uint8_t DistanceSensor_StartContinousMeasurements(tDistanceSensor *sensor) {
+	DistanceSensor_SetRegister(sensor, VL6180X_SYSALS_INTERMEASUREMENT_PERIOD,
+			0x00);
+	DistanceSensor_SetRegister(sensor, VL6180X_SYSRANGE_MAX_CONVERGENCE_TIME,
+			0x01);
 	HAL_Delay(10);
 	DistanceSensor_SetRegister(sensor, VL6180X_SYSRANGE_START, 0x03);
 	HAL_Delay(10);
@@ -192,8 +202,7 @@ uint8_t DistanceSensor_StartContinousMeasurements(tDistanceSensor *sensor)
  *
  * @param sensor Distance sensor data struct instance
  */
-uint8_t DistanceSensor_Trigger(tDistanceSensor *sensor)
-{
+uint8_t DistanceSensor_Trigger(tDistanceSensor *sensor) {
 	DistanceSensor_SetRegister(sensor, VL6180X_SYSRANGE_START, 0x01);
 	sensor->trig = 0x01;
 	return 0x00;
@@ -208,8 +217,7 @@ uint8_t DistanceSensor_Trigger(tDistanceSensor *sensor)
  *
  * @return 0x00
  */
-uint8_t DistanceSensor_TrigResponse(tDistanceSensor *sensor)
-{
+uint8_t DistanceSensor_TrigResponse(tDistanceSensor *sensor) {
 	DistanceSensor_GetRegister(sensor, VL6180X_RESULT_RANGE_VAL);
 	sensor->distance = sensor->data;
 	DistanceSensor_SetRegister(sensor, VL6180X_SYSTEM_INTERRUPT_CLEAR, 0x07);
@@ -224,8 +232,7 @@ uint8_t DistanceSensor_TrigResponse(tDistanceSensor *sensor)
  *
  * @return 0x00
  */
-uint8_t DistanceSensor_GetDistanceContinous(tDistanceSensor *sensor)
-{
+uint8_t DistanceSensor_GetDistanceContinous(tDistanceSensor *sensor) {
 	DistanceSensor_GetRegister(sensor, VL6180X_RESULT_RANGE_VAL);
 	sensor->distance = sensor->data;
 
@@ -241,8 +248,7 @@ uint8_t DistanceSensor_GetDistanceContinous(tDistanceSensor *sensor)
  *
  * @return 0x00
  */
-uint8_t DistanceSensor_GetDistance(tDistanceSensor *sensor)
-{
+uint8_t DistanceSensor_GetDistance(tDistanceSensor *sensor) {
 	DistanceSensor_SetRegister(sensor, VL6180X_SYSRANGE_START, 0x01);
 	HAL_Delay(10);
 	DistanceSensor_GetRegister(sensor, VL6180X_RESULT_RANGE_VAL);
@@ -261,8 +267,8 @@ uint8_t DistanceSensor_GetDistance(tDistanceSensor *sensor)
  *
  * @param data Values to write into register
  */
-void DistanceSensor_SetRegister(tDistanceSensor *sensor, uint16_t registerAddr, uint8_t data)
-{
+void DistanceSensor_SetRegister(tDistanceSensor *sensor, uint16_t registerAddr,
+		uint8_t data) {
 	uint8_t buffer[3];
 	buffer[0] = (registerAddr >> 8) & 0xFF;
 	buffer[1] = (registerAddr & 0xFF);
@@ -279,8 +285,8 @@ void DistanceSensor_SetRegister(tDistanceSensor *sensor, uint16_t registerAddr, 
  *
  * @param data Values to write into register
  */
-void DistanceSensor_SetRegister16bit(tDistanceSensor *sensor, uint16_t registerAddr, uint16_t data)
-{
+void DistanceSensor_SetRegister16bit(tDistanceSensor *sensor,
+		uint16_t registerAddr, uint16_t data) {
 	uint8_t buffer[4];
 	buffer[0] = (registerAddr >> 8) & 0xFF;
 	buffer[1] = (registerAddr & 0xFF);
@@ -298,8 +304,7 @@ void DistanceSensor_SetRegister16bit(tDistanceSensor *sensor, uint16_t registerA
  *
  * @param registerAddr Sensor register address
  */
-void DistanceSensor_GetRegister(tDistanceSensor *sensor, uint16_t registerAddr)
-{
+void DistanceSensor_GetRegister(tDistanceSensor *sensor, uint16_t registerAddr) {
 	uint8_t buffer[2];
 	uint8_t data;
 
@@ -321,8 +326,8 @@ void DistanceSensor_GetRegister(tDistanceSensor *sensor, uint16_t registerAddr)
  *
  * @param registerAddr Sensor register address
  */
-void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor, uint16_t registerAddr)
-{
+void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor,
+		uint16_t registerAddr) {
 	uint8_t buffer[2];
 	uint8_t data[2];
 
@@ -332,6 +337,6 @@ void DistanceSensor_GetRegister16bit(tDistanceSensor *sensor, uint16_t registerA
 	HAL_I2C_Master_Transmit(sensor->hi2cx, sensor->address, buffer, 2, 300);
 	HAL_I2C_Master_Receive(sensor->hi2cx, sensor->address, data, 2, 300);
 
-	sensor->data_16 = ((uint16_t)data[0] << 8) | (uint16_t)data[1];
+	sensor->data_16 = ((uint16_t) data[0] << 8) | (uint16_t) data[1];
 
 }

@@ -144,6 +144,14 @@ int main(void)
   MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
 
+  uint8_t sensor_addr = 1;
+  uint8_t ret = 0x00;
+  while ( sensor_addr <= 255){
+	  ret  = HAL_I2C_IsDeviceReady(&hi2c1, sensor_addr++, 3, 5);
+	  if (ret == HAL_OK)
+		  break;
+  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,6 +167,9 @@ int main(void)
 			// Disable both stepper motors.
 			HAL_GPIO_WritePin(TABLE_EN_GPIO_Port, TABLE_EN_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(LIFT_EN_GPIO_Port, LIFT_EN_Pin, GPIO_PIN_SET);
+
+			// Initialize Distance Sensor
+			DistanceSensor_Init(&scanner.sensor_a, &hi2c1, sensor_addr);
 
 			// Set direction of lift to upwards
 			scanner.lift_dir			= 0x01;

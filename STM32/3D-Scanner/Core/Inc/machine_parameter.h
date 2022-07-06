@@ -32,7 +32,7 @@
 //
 //Software Simulation Mode
 //
-#define SIM_MODE
+// #define SIM_MODE
 
 //
 // Measurements per row
